@@ -8,6 +8,8 @@ import { UtilisateursModule } from './utilisateurs/utilisateurs.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from "@nestjs/config";
 import jwtConfig from './config/jwt.config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from '../src/auth/guard/jwt-auth.guard';
 
 @Module({
   
@@ -17,6 +19,11 @@ import jwtConfig from './config/jwt.config';
       load: [jwtConfig],
     }), AuthModule, UtilisateursModule, TachesModule, CommentairesModule, PrismaModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService ,
+            {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

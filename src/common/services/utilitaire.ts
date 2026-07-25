@@ -1,4 +1,4 @@
-// password.util.ts
+
 import { randomBytes } from "crypto";
 
 export class Utilitaire {

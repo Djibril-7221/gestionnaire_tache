@@ -1,26 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTachDto } from './dto/create-tach.dto';
 import { UpdateTachDto } from './dto/update-tach.dto';
+import { PrismaService } from '../prisma/prisma.service';
+
 
 @Injectable()
 export class TachesService {
-  create(createTachDto: CreateTachDto) {
-    return 'This action adds a new tach';
+  constructor(private prisma: PrismaService) {}
+
+  async create(createTachDto: CreateTachDto , utilisateur) {
+    const donnee = {... createTachDto , createur_id : utilisateur.id }
+    return this.prisma.tache.create({
+      data: donnee,
+      include: {
+        createur: { select: { id: true, nom: true, prenom: true } },
+        destinataire: { select: { id: true, nom: true, prenom: true } },
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all taches`;
+  async findAll() {
+    return this.prisma.tache.findMany({
+      include: {
+        createur: { select: { id: true, nom: true, prenom: true } },
+        destinataire: { select: { id: true, nom: true, prenom: true } },
+      },
+      orderBy: { created_at: 'desc' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tach`;
+  async findOne(id: number) {
+    const tache = await this.prisma.tache.findUnique({
+      where: { id },
+      include: {
+        createur: { select: { id: true, nom: true, prenom: true } },
+        destinataire: { select: { id: true, nom: true, prenom: true } },
+        commentaires: true,
+      },
+    });
+    if (!tache) {
+      throw new NotFoundException(`Tâche #${id} introuvable`);
+    }
+    return tache;
   }
 
-  update(id: number, updateTachDto: UpdateTachDto) {
-    return `This action updates a #${id} tach`;
+  async update(id: number, updateTachDto: UpdateTachDto) {
+    await this.findOne(id);
+    return this.prisma.tache.update({
+      where: { id },
+      data: updateTachDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tach`;
+  async remove(id: number) {
+    await this.findOne(id);
+    return this.prisma.tache.delete({ where: { id } });
   }
 }

@@ -2,11 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@ne
 import { UtilisateursService } from './utilisateurs.service';
 import { CreateUtilisateurDto } from './dto/create-utilisateur.dto';
 import { UpdateUtilisateurDto } from './dto/update-utilisateur.dto';
+import { Public } from '../auth/decorator/public-decorator';
 
 @Controller('utilisateurs')
 export class UtilisateursController {
   constructor(private readonly utilisateursService: UtilisateursService) {}
 
+  @Public()
   @Post('register')
   @HttpCode(200)
   create(@Body() createUtilisateurDto: CreateUtilisateurDto) {
