@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Utilisateur {
+  id           Int           @id @default(autoincrement())
+  nom          String
+  prenom       String
+  email        String        @unique
+  mot_de_passe String
+  role         Role          @default(COLLABORATEUR)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  auteur       Commentaire[] @relation("Auteur")
+  createur     Tache[]              @relation("Createur")
+  destinataire Tache[]              @relation("Destinataire")
+  refresh      RefreshToken[]       @relation("Refresh")
+
+  @@map("utilisateurs")
+}
+
+model Tache {
+  id              Int           @id @default(autoincrement())
+  titre           String
+  description     String
+  createur_id     Int
+  destinataire_id Int
+  statut          Statut        @default(BROUILLON)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  commentaires    Commentaire[] @relation("Commentaire")
+  createur        Utilisateur   @relation("Createur", fields: [createur_id], references: [id], onDelete: Cascade)
+  destinataire    Utilisateur   @relation("Destinataire", fields: [destinataire_id], references: [id], onDelete: Cascade)
+
+  @@map("taches")
+}
+
+model Commentaire {
+  id         Int         @id @default(autoincrement())
+  contenu    String
+  tache_id   Int
+  auteur_id  Int
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  auteur     Utilisateur @relation("Auteur", fields: [auteur_id], references: [id])
+  tache      Tache       @relation("Commentaire", fields: [tache_id], references: [id], onDelete: Cascade)
+
+  @@map("commentaires")
+}
+
+model RefreshToken {
+  id              Int      @id @default(autoincrement())
+  token           String
+  expiresAt       DateTime
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+  utilisateur_id  Int
+
+  utilisateur      Utilisateur @relation("Refresh" ,fields: [utilisateur_id], references: [id])
+
+  @@map("refresh_tokens")
+}
+
+enum Role {
+  COLLABORATEUR
+  MANAGER
+  ADMINISTRATEUR
+}
+
+enum Statut {
+  BROUILLON
+  VALIDEE
+  REJETEE
+  SOUMISE
+}
