@@ -15,9 +15,6 @@ export class CreateTachDto {
   @IsNotEmpty()
   description!: string;
 
-  @IsInt()
-  destinataire_id!: number;
-
   @IsOptional()
   statut?: Statut;
 }

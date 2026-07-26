@@ -8,8 +8,8 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TachesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createTachDto: CreateTachDto , utilisateur) {
-    const donnee = {... createTachDto , createur_id : utilisateur.id }
+  async create(createTachDto: CreateTachDto , utilisateur , destinataire_id) {
+    const donnee = {... createTachDto , createur_id : utilisateur.id , destinataire_id }
     return this.prisma.tache.create({
       data: donnee,
       include: {
@@ -29,20 +29,40 @@ export class TachesService {
     });
   }
 
-  async findOne(id: number) {
-    const tache = await this.prisma.tache.findUnique({
-      where: { id },
+  async findAllForManagerOrCollaborateur(id: number, isManager: boolean) {
+    const where = isManager
+      ? { createur_id: id }
+      : { destinataire_id: id };
+
+    return this.prisma.tache.findMany({
+      where,
       include: {
         createur: { select: { id: true, nom: true, prenom: true } },
         destinataire: { select: { id: true, nom: true, prenom: true } },
         commentaires: true,
       },
+      orderBy: { created_at: 'desc' },
     });
-    if (!tache) {
-      throw new NotFoundException(`Tâche #${id} introuvable`);
-    }
-    return tache;
   }
+
+async findOne(id: number) {
+  const tache = await this.prisma.tache.findUnique({
+    where: { id },
+    include: {
+      createur: { select: { id: true, nom: true, prenom: true } },
+      destinataire: { select: { id: true, nom: true, prenom: true } },
+      commentaires: {
+        include: {
+          auteur: { select: { id: true, nom: true, prenom: true } },
+        },
+      },
+    },
+  });
+  if (!tache) {
+    throw new NotFoundException(`Tâche #${id} introuvable`);
+  }
+  return tache;
+}
 
   async update(id: number, updateTachDto: UpdateTachDto) {
     await this.findOne(id);

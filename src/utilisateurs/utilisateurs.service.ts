@@ -8,6 +8,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Role } from './dto/create-utilisateur.dto';
 
 @Injectable()
 export class UtilisateursService {
@@ -21,13 +22,8 @@ export class UtilisateursService {
 async create(createUtilisateurDto: CreateUtilisateurDto) {
   try {
     const resultat = await this.prisma.$transaction(async (tx) => {
-      const refreshToken = Utilitaire.genererToken(60);
-      const coutHash = 10;
-      const tokenHash = await bcrypt.hash(refreshToken, coutHash);
-      const motDePasseHash = await bcrypt.hash(createUtilisateurDto.mot_de_passe, 10);
 
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 1);
+      const motDePasseHash = await bcrypt.hash(createUtilisateurDto.mot_de_passe, 10);
 
       const utilisateur = await tx.utilisateur.create({
         data: {
@@ -36,27 +32,7 @@ async create(createUtilisateurDto: CreateUtilisateurDto) {
         },
       });
 
-      const payload = { sub: utilisateur.id, email: utilisateur.email, role: utilisateur.role };
-      const accessToken = this.jwtService.sign(payload, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION'),
-      });
 
-      await tx.refreshToken.create({
-        data: {
-          token: tokenHash, 
-          expiresAt,
-          utilisateur: { connect: { id: utilisateur.id } },
-        },
-      });
-      
-      const { mot_de_passe, ...utilisateurSansMdp } = utilisateur;
-
-      return {
-        utilisateur,
-        access_token: accessToken,
-        refresh_token: refreshToken, 
-      };
     });
 
     return resultat;
@@ -66,8 +42,25 @@ async create(createUtilisateurDto: CreateUtilisateurDto) {
   }
 } 
 
-  findAll() {
-    return `This action returns all utilisateurs`;
+  async findAll() {
+    return this.prisma.utilisateur.findMany({
+      select: {
+        id: true,
+        nom: true,
+        prenom: true,
+        email: true,
+        role: true,
+        created_at: true,
+      },
+      orderBy: { created_at: 'desc' },
+    });
+  }
+
+  findAllCollaborateur() {
+    return this.prisma.utilisateur.findMany({
+      where: {role: Role.COLLABORATEUR},
+      orderBy: { created_at: 'desc' },
+    });
   }
 
   findOne(id: number) {
@@ -82,11 +75,5 @@ async create(createUtilisateurDto: CreateUtilisateurDto) {
     return `This action removes a #${id} utilisateur`;
   }
 
-  
 
-generateRandomPassword(length = 12): string {
-  return randomBytes(length)
-    .toString("base64")
-    .slice(0, length);
-}
 }

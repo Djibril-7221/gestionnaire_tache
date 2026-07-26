@@ -12,23 +12,24 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
-  @Post()
+  @Post('login')
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.login(createAuthDto);
   }
 
-@Post('logout')
-async logout(
-  @CurrentUser() user: { id: number },
-  @Body('refresh_token') refreshToken: string,
-) {
-  return this.authService.logout(user.id, refreshToken);
-}
+  @Public()
+  @Post('logout')
+  async logout(
+    @CurrentUser() user: { id: number },
+    @Body('refresh_token') refreshToken: string,
+  ) {
+    return this.authService.logout(user.id, refreshToken);
+  }
 
-@Public()
-@Post('refresh')
-async refresh(@Body('refresh_token') refreshToken: string) {
-  return this.authService.refresh(refreshToken);
-}
+  @Public()
+  @Post('refresh')
+  async refresh(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
+  }
 
 }

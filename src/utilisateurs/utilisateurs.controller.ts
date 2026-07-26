@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode ,  UseGuards } from '@nestjs/common';
 import { UtilisateursService } from './utilisateurs.service';
 import { CreateUtilisateurDto } from './dto/create-utilisateur.dto';
 import { UpdateUtilisateurDto } from './dto/update-utilisateur.dto';
-import { Public } from '../auth/decorator/public-decorator';
+import { AdminGuard } from './guard/admin.guard';
+
 
 @Controller('utilisateurs')
 export class UtilisateursController {
   constructor(private readonly utilisateursService: UtilisateursService) {}
 
-  @Public()
+  @UseGuards(AdminGuard)
   @Post('register')
   @HttpCode(200)
   create(@Body() createUtilisateurDto: CreateUtilisateurDto) {
@@ -18,6 +19,11 @@ export class UtilisateursController {
   @Get()
   findAll() {
     return this.utilisateursService.findAll();
+  }
+
+  @Get('les-collaborateurs')
+  findAllCollaborateur() {
+    return this.utilisateursService.findAllCollaborateur();
   }
 
   @Get(':id')
