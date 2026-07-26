@@ -1,0 +1,78 @@
+<div class="fixed inset-0 bg-[#0C2A20]/40 backdrop-blur-[2px] flex items-center justify-center z-50 p-4"
+  style="animation: fondu 0.2s ease-out;">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-7"
+    style="animation: entree-popup 0.25s cubic-bezier(0.16, 1, 0.3, 1) backwards;">
+
+    <div class="flex justify-between items-start mb-1">
+      <div>
+        <p class="text-xs uppercase tracking-[0.2em] text-[#6B8577] mb-1" style="font-family: 'IBM Plex Mono', monospace;">
+          Nouvelle assignation
+        </p>
+        <h2 class="text-2xl text-[#16241E]" style="font-family: 'Fraunces', serif;">
+          {{ destinataireNom }}
+        </h2>
+      </div>
+      <button (click)="onFermer()"
+        class="w-8 h-8 flex items-center justify-center rounded-full text-[#6B8577] hover:bg-[#F4F7F5] hover:text-[#16241E] transition-colors duration-200 text-xl leading-none">
+        &times;
+      </button>
+    </div>
+
+    @if (errorMessage) {
+      <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded mt-4 text-sm" style="font-family: 'Work Sans', sans-serif;">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="mt-6">
+      <div class="mb-5">
+        <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-1.5" style="font-family: 'Work Sans', sans-serif;">
+          Titre
+        </label>
+        <input type="text" formControlName="titre"
+          class="w-full border border-[#D8E0DB] rounded px-3 py-2.5 text-[#16241E] transition-colors duration-200
+                 focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+          style="font-family: 'Work Sans', sans-serif;" />
+      </div>
+
+      <div class="mb-7">
+        <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-1.5" style="font-family: 'Work Sans', sans-serif;">
+          Description
+        </label>
+        <textarea formControlName="description" rows="4"
+          class="w-full border border-[#D8E0DB] rounded px-3 py-2.5 text-[#16241E] transition-colors duration-200 resize-none
+                 focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+          style="font-family: 'Work Sans', sans-serif;"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" (click)="onFermer()"
+          class="px-4 py-2.5 rounded border border-[#D8E0DB] text-[#6B8577] text-sm font-medium
+                 transition-colors duration-200 hover:bg-[#F4F7F5]"
+          style="font-family: 'Work Sans', sans-serif;">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="form.invalid || loading"
+          class="bg-[#0C2A20] text-[#F4F7F5] px-5 py-2.5 rounded text-sm font-medium transition-all duration-200
+                 hover:bg-[#15402F] disabled:opacity-50 disabled:hover:bg-[#0C2A20]"
+          style="font-family: 'Work Sans', sans-serif;">
+          {{ loading ? 'Envoi...' : 'Assigner' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+@keyframes fondu {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes entree-popup {
+  from { opacity: 0; transform: scale(0.96) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; }
+}
+</style>

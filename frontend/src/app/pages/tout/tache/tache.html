@@ -1,0 +1,130 @@
+<div class="min-h-screen bg-[#F4F7F5] md:pl-64 pt-14 md:pt-0">
+  <app-sidebar-app />
+
+  <div class="max-w-2xl mx-auto px-6 py-10 md:py-14">
+
+    @if (loading()) {
+      <div class="flex items-center gap-3 text-[#6B8577] py-8">
+        <span class="w-4 h-4 rounded-full border-2 border-[#35D68C] border-t-transparent animate-spin"></span>
+        <span style="font-family: 'Work Sans', sans-serif;">Chargement...</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-6" style="font-family: 'Work Sans', sans-serif;">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    @if (tache(); as t) {
+
+      <!-- Bloc tâche -->
+      <div class="bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-7 mb-6"
+        style="animation: entree 0.3s ease-out;">
+        <div class="flex justify-between items-start gap-4 mb-3">
+          <h1 class="text-3xl text-[#16241E] leading-tight" style="font-family: 'Fraunces', serif;">
+            {{ t.titre }}
+          </h1>
+          <span [class]="'shrink-0 text-[11px] px-3 py-1 rounded border-2 border-dashed uppercase tracking-wider -rotate-2 ' + couleurStatut(t.statut)"
+            style="font-family: 'IBM Plex Mono', monospace;">
+            {{ t.statut }}
+          </span>
+        </div>
+        <p class="text-[#6B8577] leading-relaxed mb-6" style="font-family: 'Work Sans', sans-serif;">
+          {{ t.description }}
+        </p>
+
+        @if (!estAdmin) {
+          <div class="flex flex-wrap gap-2 pt-5 border-t border-[#EFF3F1]">
+            @if (peutSoumettre) {
+              <button (click)="changerStatut('SOUMISE')"
+                class="bg-[#0C2A20] text-[#F4F7F5] px-4 py-2 rounded text-sm font-medium transition-all duration-200 hover:bg-[#15402F]"
+                style="font-family: 'Work Sans', sans-serif;">
+                Soumettre
+              </button>
+            }
+            @if (peutValider) {
+              <button (click)="changerStatut('VALIDEE')"
+                class="bg-[#35D68C] text-[#0C2A20] px-4 py-2 rounded text-sm font-medium transition-all duration-200 hover:brightness-95"
+                style="font-family: 'Work Sans', sans-serif;">
+                Valider
+              </button>
+            }
+            @if (peutRefuser) {
+              <button (click)="changerStatut('REJETEE')"
+                class="bg-white text-red-600 border border-red-300 px-4 py-2 rounded text-sm font-medium transition-all duration-200 hover:bg-red-50"
+                style="font-family: 'Work Sans', sans-serif;">
+                Refuser
+              </button>
+            }
+            @if (peutRemettreBrouillon) {
+              <button (click)="changerStatut('BROUILLON')"
+                class="bg-white text-[#6B8577] border border-[#D8E0DB] px-4 py-2 rounded text-sm font-medium transition-all duration-200 hover:bg-[#F4F7F5]"
+                style="font-family: 'Work Sans', sans-serif;">
+                Remettre en brouillon
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Bloc commentaires -->
+      <div class="bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-7"
+        style="animation: entree 0.3s ease-out 0.05s backwards;">
+        <p class="text-xs uppercase tracking-[0.2em] text-[#6B8577] mb-5" style="font-family: 'IBM Plex Mono', monospace;">
+          Commentaires · {{ t.commentaires?.length ?? 0 }}
+        </p>
+
+        <div class="space-y-5 mb-6">
+          @for (c of t.commentaires; track c.id; let i = $index) {
+            <div class="flex gap-3" style="animation: entree-ligne 0.3s ease-out backwards;" [style.animation-delay.ms]="i * 60">
+              <div class="w-8 h-8 rounded-full bg-[#15402F] text-[#F4F7F5] text-xs flex items-center justify-center shrink-0 font-medium"
+                style="font-family: 'Work Sans', sans-serif;">
+                {{ c.auteur.prenom.charAt(0) }}{{ c.auteur.nom.charAt(0) }}
+              </div>
+              <div class="flex-1 pb-5 border-b border-[#EFF3F1] last:border-0 last:pb-0">
+                <p class="text-sm font-medium text-[#16241E]" style="font-family: 'Work Sans', sans-serif;">
+                  {{ c.auteur.prenom }} {{ c.auteur.nom }}
+                </p>
+                <p class="text-[#6B8577] mt-0.5" style="font-family: 'Work Sans', sans-serif;">{{ c.contenu }}</p>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-[#6B8577] text-sm text-center py-6" style="font-family: 'Work Sans', sans-serif;">
+              Aucun commentaire pour l'instant.
+            </p>
+          }
+        </div>
+
+        @if (peutCommenter) {
+          <form [formGroup]="commentForm" (ngSubmit)="envoyerCommentaire()" class="flex gap-2 pt-2">
+            <input type="text" formControlName="contenu" placeholder="Écrire un commentaire..."
+              class="flex-1 border border-[#D8E0DB] rounded px-3 py-2.5 text-[#16241E] transition-colors duration-200
+                     focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+              style="font-family: 'Work Sans', sans-serif;" />
+            <button type="submit" [disabled]="commentForm.invalid || envoiCommentaire()"
+              class="bg-[#0C2A20] text-[#F4F7F5] px-5 py-2.5 rounded text-sm font-medium transition-all duration-200
+                     hover:bg-[#15402F] disabled:opacity-50"
+              style="font-family: 'Work Sans', sans-serif;">
+              Envoyer
+            </button>
+          </form>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+@keyframes entree {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes entree-ligne {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>

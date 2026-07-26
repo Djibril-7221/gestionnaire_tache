@@ -1,0 +1,109 @@
+<div class="min-h-screen bg-[#F4F7F5] md:pl-64 pt-14 md:pt-0">
+  <app-sidebar-app />
+
+  <div class="max-w-3xl mx-auto px-6 py-10 md:py-14">
+
+    <!-- En-tête -->
+    <div class="mb-8">
+      <p class="text-xs uppercase tracking-[0.2em] text-[#6B8577] mb-1" style="font-family: 'IBM Plex Mono', monospace;">
+        Registre
+      </p>
+      <h1 class="text-4xl text-[#16241E]" style="font-family: 'Fraunces', serif;">
+        Utilisateurs
+      </h1>
+    </div>
+
+    <!-- Filtres façon onglets de classeur -->
+    <div class="flex gap-1 mb-8 border-b border-[#E4EAE6]">
+      <button (click)="changerFiltre('TOUS')"
+        class="relative px-4 py-2.5 text-sm transition-colors duration-200"
+        style="font-family: 'Work Sans', sans-serif;"
+        [class.text-[#16241E]]="filtreActif() === 'TOUS'"
+        [class.text-[#6B8577]]="filtreActif() !== 'TOUS'">
+        Tous
+        <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#16241E] transition-transform duration-200 origin-left"
+          [class.scale-x-100]="filtreActif() === 'TOUS'" [class.scale-x-0]="filtreActif() !== 'TOUS'"></span>
+      </button>
+
+      <button (click)="changerFiltre('COLLABORATEUR')"
+        class="relative px-4 py-2.5 text-sm transition-colors duration-200"
+        style="font-family: 'Work Sans', sans-serif;"
+        [class.text-[#16241E]]="filtreActif() === 'COLLABORATEUR'"
+        [class.text-[#6B8577]]="filtreActif() !== 'COLLABORATEUR'">
+        Collaborateurs
+        <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#35D68C] transition-transform duration-200 origin-left"
+          [class.scale-x-100]="filtreActif() === 'COLLABORATEUR'" [class.scale-x-0]="filtreActif() !== 'COLLABORATEUR'"></span>
+      </button>
+
+      <button (click)="changerFiltre('MANAGER')"
+        class="relative px-4 py-2.5 text-sm transition-colors duration-200"
+        style="font-family: 'Work Sans', sans-serif;"
+        [class.text-[#16241E]]="filtreActif() === 'MANAGER'"
+        [class.text-[#6B8577]]="filtreActif() !== 'MANAGER'">
+        Managers
+        <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-500 transition-transform duration-200 origin-left"
+          [class.scale-x-100]="filtreActif() === 'MANAGER'" [class.scale-x-0]="filtreActif() !== 'MANAGER'"></span>
+      </button>
+
+      <button (click)="changerFiltre('ADMINISTRATEUR')"
+        class="relative px-4 py-2.5 text-sm transition-colors duration-200"
+        style="font-family: 'Work Sans', sans-serif;"
+        [class.text-[#16241E]]="filtreActif() === 'ADMINISTRATEUR'"
+        [class.text-[#6B8577]]="filtreActif() !== 'ADMINISTRATEUR'">
+        Administrateurs
+        <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-purple-500 transition-transform duration-200 origin-left"
+          [class.scale-x-100]="filtreActif() === 'ADMINISTRATEUR'" [class.scale-x-0]="filtreActif() !== 'ADMINISTRATEUR'"></span>
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="flex items-center gap-3 text-[#6B8577] py-8">
+        <span class="w-4 h-4 rounded-full border-2 border-[#35D68C] border-t-transparent animate-spin"></span>
+        <span style="font-family: 'Work Sans', sans-serif;">Chargement...</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-6" style="font-family: 'Work Sans', sans-serif;">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <!-- Liste -->
+    <div class="bg-white rounded-lg shadow-sm border border-[#E4EAE6] divide-y divide-[#EFF3F1] overflow-hidden">
+      @for (u of utilisateursFiltres(); track u.id; let i = $index) {
+        <div class="group relative p-4 flex justify-between items-center transition-colors duration-200 hover:bg-[#F4F7F5]"
+          style="animation: entree-ligne 0.35s ease-out backwards;"
+          [style.animation-delay.ms]="i * 40">
+
+          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 rounded-r bg-[#35D68C]
+                       transition-all duration-200 group-hover:h-6"></span>
+
+          <div class="pl-2">
+            <p class="font-medium text-[#16241E]" style="font-family: 'Work Sans', sans-serif;">{{ u.prenom }} {{ u.nom }}</p>
+            <p class="text-sm text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">{{ u.email }}</p>
+          </div>
+
+          <span [class]="'text-[11px] px-3 py-1 rounded border-2 border-dashed uppercase tracking-wider -rotate-2 transition-transform duration-200 group-hover:rotate-0 ' + couleurRole(u.role)"
+            style="font-family: 'IBM Plex Mono', monospace;">
+            {{ u.role }}
+          </span>
+        </div>
+      } @empty {
+        <div class="p-10 text-center">
+          <p class="text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">Aucun utilisateur pour ce filtre.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes entree-ligne {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>

@@ -1,0 +1,120 @@
+<div class="min-h-screen bg-[#F4F7F5] md:pl-64 pt-14 md:pt-0">
+  <app-sidebar-app />
+
+  <div class="max-w-4xl mx-auto px-6 py-10 md:py-14">
+
+    <!-- En-tête -->
+    <div class="mb-10">
+      <p class="text-xs uppercase tracking-[0.2em] text-[#6B8577] mb-1" style="font-family: 'IBM Plex Mono', monospace;">
+        Vue d'ensemble
+      </p>
+      <h1 class="text-4xl text-[#16241E]" style="font-family: 'Fraunces', serif; font-optical-sizing: auto;">
+        Tableau de bord
+      </h1>
+    </div>
+
+    @if (loading()) {
+      <div class="flex items-center gap-3 text-[#6B8577] py-8">
+        <span class="w-4 h-4 rounded-full border-2 border-[#35D68C] border-t-transparent animate-spin"></span>
+        <span style="font-family: 'Work Sans', sans-serif;">Chargement des tâches...</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-6" style="font-family: 'Work Sans', sans-serif;">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    @if (!loading() && !errorMessage()) {
+
+      <!-- Fiches statistiques : effet "empilé" -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-12">
+        <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
+                    transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-[#16241E]"></div>
+          <p class="text-3xl text-[#16241E] mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ total }}</p>
+          <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Total</p>
+        </div>
+
+        <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
+                    transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-gray-300"></div>
+          <p class="text-3xl text-gray-500 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('BROUILLON') }}</p>
+          <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Brouillon</p>
+        </div>
+
+        <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
+                    transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-amber-400"></div>
+          <p class="text-3xl text-amber-600 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('SOUMISE') }}</p>
+          <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Soumise</p>
+        </div>
+
+        <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
+                    transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-[#35D68C]"></div>
+          <p class="text-3xl text-emerald-700 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('VALIDEE') }}</p>
+          <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Validée</p>
+        </div>
+
+        <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
+                    transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-red-400"></div>
+          <p class="text-3xl text-red-600 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('REJETEE') }}</p>
+          <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Rejetée</p>
+        </div>
+      </div>
+
+      <!-- Liste des tâches -->
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 class="text-lg text-[#16241E]" style="font-family: 'Fraunces', serif;">Toutes les tâches</h2>
+        <span class="text-xs text-[#6B8577]" style="font-family: 'IBM Plex Mono', monospace;">{{ total }} au total</span>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-[#E4EAE6] divide-y divide-[#EFF3F1] overflow-hidden">
+        @for (t of taches(); track t.id; let i = $index) {
+        <div (click)="voirTache(t.id)"
+            class="group relative p-4 flex justify-between items-center cursor-pointer
+                transition-colors duration-200 hover:bg-[#F4F7F5]"
+            style="animation: entree-ligne 0.35s ease-out backwards;"
+            [style.animation-delay.ms]="i * 40">
+
+            <!-- Accent gauche au survol, écho du sidebar -->
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 rounded-r bg-[#35D68C]
+                         transition-all duration-200 group-hover:h-6"></span>
+
+            <div class="pl-2">
+              <p class="font-medium text-[#16241E]" style="font-family: 'Work Sans', sans-serif;">{{ t.titre }}</p>
+              <p class="text-sm text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">
+                Créée par {{ t.createur.prenom }} {{ t.createur.nom }} · pour {{ t.destinataire.prenom }} {{ t.destinataire.nom }}
+              </p>
+            </div>
+
+            <!-- Statut en "tampon encreur" -->
+            <span [class]="'text-[11px] px-3 py-1 rounded border-2 border-dashed uppercase tracking-wider -rotate-2 transition-transform duration-200 group-hover:rotate-0 ' + couleurStatut(t.statut)"
+              style="font-family: 'IBM Plex Mono', monospace;">
+              {{ t.statut }}
+            </span>
+          </div>
+        } @empty {
+          <div class="p-10 text-center">
+            <p class="text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">
+              Aucune tâche pour l'instant. Elles apparaîtront ici dès qu'une sera créée.
+            </p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+@keyframes entree-ligne {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>

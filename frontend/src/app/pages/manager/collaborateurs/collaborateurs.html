@@ -1,0 +1,78 @@
+<div class="min-h-screen bg-[#F4F7F5] md:pl-64 pt-14 md:pt-0">
+  <app-sidebar-app />
+
+  <div class="max-w-2xl mx-auto px-6 py-10 md:py-14">
+
+    <!-- En-tête -->
+    <div class="mb-10">
+      <p class="text-xs uppercase tracking-[0.2em] text-[#6B8577] mb-1" style="font-family: 'IBM Plex Mono', monospace;">
+        Équipe
+      </p>
+      <h1 class="text-4xl text-[#16241E]" style="font-family: 'Fraunces', serif;">
+        Collaborateurs
+      </h1>
+    </div>
+
+    @if (loading()) {
+      <div class="flex items-center gap-3 text-[#6B8577] py-8">
+        <span class="w-4 h-4 rounded-full border-2 border-[#35D68C] border-t-transparent animate-spin"></span>
+        <span style="font-family: 'Work Sans', sans-serif;">Chargement...</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded mb-6" style="font-family: 'Work Sans', sans-serif;">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="bg-white rounded-lg shadow-sm border border-[#E4EAE6] divide-y divide-[#EFF3F1] overflow-hidden">
+      @for (c of collaborateurs(); track c.id; let i = $index) {
+        <div class="group relative p-4 flex justify-between items-center transition-colors duration-200 hover:bg-[#F4F7F5]"
+          style="animation: entree-ligne 0.35s ease-out backwards;"
+          [style.animation-delay.ms]="i * 40">
+
+          <span class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 rounded-r bg-[#35D68C]
+                       transition-all duration-200 group-hover:h-6"></span>
+
+          <div class="pl-2">
+            <p class="font-medium text-[#16241E]" style="font-family: 'Work Sans', sans-serif;">{{ c.prenom }} {{ c.nom }}</p>
+            <p class="text-sm text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">{{ c.email }}</p>
+          </div>
+
+          <button (click)="ouvrirModal(c)"
+            class="bg-[#0C2A20] text-[#F4F7F5] px-4 py-2 rounded text-sm font-medium transition-all duration-200
+                   hover:bg-[#15402F] hover:shadow-sm"
+            style="font-family: 'Work Sans', sans-serif;">
+            Assigner une tâche
+          </button>
+        </div>
+      } @empty {
+        <div class="p-10 text-center">
+          <p class="text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">
+            Aucun collaborateur pour l'instant.
+          </p>
+        </div>
+      }
+    </div>
+
+    @if (modalOuvert() && collaborateurSelectionne(); as sel) {
+      <app-creer-tache-modal
+        [destinataireId]="sel.id"
+        [destinataireNom]="sel.prenom + ' ' + sel.nom"
+        (fermer)="fermerModal()"
+        (tacheCreee)="onTacheCreee()">
+      </app-creer-tache-modal>
+    }
+  </div>
+</div>
+
+<style>
+@keyframes entree-ligne {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>

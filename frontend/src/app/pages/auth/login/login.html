@@ -1,0 +1,102 @@
+<div class="min-h-screen flex bg-[#F4F7F5]">
+
+  <!-- Panneau de marque (masqué en mobile) -->
+  <div class="hidden md:flex md:w-2/5 bg-[#0C2A20] flex-col justify-between p-10 relative overflow-hidden">
+    <div class="flex items-center gap-3">
+      <div class="w-2 h-2 rounded-full bg-[#35D68C]"></div>
+      <span class="text-[#F4F7F5] text-sm font-semibold tracking-wide uppercase" style="font-family: 'Work Sans', sans-serif;">
+        RH Perspectives
+      </span>
+    </div>
+
+    <div>
+      <h1 class="text-4xl text-[#F4F7F5] leading-tight mb-4" style="font-family: 'Fraunces', serif;">
+        Chaque tâche,<br />suivie du brouillon<br />à la validation.
+      </h1>
+      <p class="text-[#8FAFA0] text-sm" style="font-family: 'Work Sans', sans-serif;">
+        Assignez, commentez, validez — en un seul endroit.
+      </p>
+    </div>
+
+    <!-- Signature : mini-séquence de tampons animée -->
+    <div class="flex gap-2">
+      @for (etape of etapes; track etape.label; let i = $index) {
+        <span class="text-[10px] px-3 py-1 rounded border-2 border-dashed uppercase tracking-wider text-[#8FAFA0] border-[#2A4D3C]"
+          style="font-family: 'IBM Plex Mono', monospace; animation: apparition 0.5s ease-out backwards;"
+          [style.animation-delay.ms]="600 + i * 200">
+          {{ etape.label }}
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Panneau formulaire -->
+  <div class="flex-1 flex items-center justify-center p-6">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="w-full max-w-sm">
+
+      <div class="md:hidden flex items-center gap-2 mb-8">
+        <div class="w-2 h-2 rounded-full bg-[#35D68C]"></div>
+        <span class="text-xs uppercase tracking-wide text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">RH Perspectives</span>
+      </div>
+
+      <h2 class="text-3xl text-[#16241E] mb-1" style="font-family: 'Fraunces', serif;">Connexion</h2>
+      <p class="text-sm text-[#6B8577] mb-8" style="font-family: 'Work Sans', sans-serif;">Accédez à votre espace.</p>
+
+      @if (errorMessage) {
+        <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-5 text-sm" style="font-family: 'Work Sans', sans-serif;">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <div class="mb-5">
+        <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-1.5" style="font-family: 'Work Sans', sans-serif;">
+          Email
+        </label>
+        <input type="email" formControlName="email"
+          class="w-full border border-[#D8E0DB] rounded px-3 py-2.5 text-[#16241E] transition-colors duration-200
+                 focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+          style="font-family: 'Work Sans', sans-serif;" />
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <p class="text-red-500 text-xs mt-1" style="font-family: 'Work Sans', sans-serif;">Email invalide</p>
+        }
+      </div>
+
+      <div class="mb-5">
+        <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-1.5" style="font-family: 'Work Sans', sans-serif;">
+          Mot de passe
+        </label>
+        <input type="password" formControlName="mot_de_passe"
+          class="w-full border border-[#D8E0DB] rounded px-3 py-2.5 text-[#16241E] transition-colors duration-200
+                 focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+          style="font-family: 'Work Sans', sans-serif;" />
+      </div>
+
+      <div class="mb-6 flex items-center gap-2">
+        <input type="checkbox" formControlName="se_souvenir_de_moi" id="remember"
+          class="w-4 h-4 rounded border-[#D8E0DB] text-[#35D68C] focus:ring-[#35D68C]" />
+        <label for="remember" class="text-sm text-[#6B8577]" style="font-family: 'Work Sans', sans-serif;">Se souvenir de moi</label>
+      </div>
+
+      <button type="submit" [disabled]="form.invalid || loading"
+        class="w-full bg-[#0C2A20] text-[#F4F7F5] py-2.5 rounded font-medium transition-all duration-200
+               hover:bg-[#15402F] disabled:opacity-50 disabled:hover:bg-[#0C2A20]"
+        style="font-family: 'Work Sans', sans-serif;">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+
+      <p class="text-center text-sm text-[#6B8577] mt-6" style="font-family: 'Work Sans', sans-serif;">
+        Pas de compte ? <a routerLink="/register" class="text-[#16241E] font-medium hover:underline">S'inscrire</a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<style>
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>

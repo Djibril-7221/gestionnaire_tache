@@ -1,0 +1,101 @@
+<div class="min-h-screen bg-[#F4F7F5] md:pl-64 pt-14 md:pt-0">
+  <app-sidebar-app />
+
+  <div class="min-h-screen md:min-h-0 flex items-center justify-center px-6 py-10 md:py-16">
+    <div class="w-full max-w-2xl">
+
+      <!-- En-tête -->
+      <div class="mb-8 text-center md:text-left">
+        <p class="text-xs uppercase tracking-[0.2em] text-[#6B8577] mb-1" style="font-family: 'IBM Plex Mono', monospace;">
+          Administration
+        </p>
+        <h1 class="text-4xl text-[#16241E]" style="font-family: 'Fraunces', serif;">
+          Nouveau compte
+        </h1>
+        <p class="text-sm text-[#6B8577] mt-2" style="font-family: 'Work Sans', sans-serif;">
+          Créez un accès pour un membre de l'équipe.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-9 md:p-10">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          @if (errorMessage()) {
+            <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-6 text-sm" style="font-family: 'Work Sans', sans-serif;">
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-2" style="font-family: 'Work Sans', sans-serif;">Nom</label>
+              <input type="text" formControlName="nom"
+                class="w-full border border-[#D8E0DB] rounded px-4 py-3 text-[#16241E] transition-colors duration-200
+                       focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+                style="font-family: 'Work Sans', sans-serif;" />
+              @if (form.get('nom')?.invalid && form.get('nom')?.touched) {
+                <p class="text-red-500 text-xs mt-1.5" style="font-family: 'Work Sans', sans-serif;">Min. 2 caractères</p>
+              }
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-2" style="font-family: 'Work Sans', sans-serif;">Prénom</label>
+              <input type="text" formControlName="prenom"
+                class="w-full border border-[#D8E0DB] rounded px-4 py-3 text-[#16241E] transition-colors duration-200
+                       focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+                style="font-family: 'Work Sans', sans-serif;" />
+              @if (form.get('prenom')?.invalid && form.get('prenom')?.touched) {
+                <p class="text-red-500 text-xs mt-1.5" style="font-family: 'Work Sans', sans-serif;">Min. 2 caractères</p>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-2" style="font-family: 'Work Sans', sans-serif;">Email</label>
+              <input type="email" formControlName="email"
+                class="w-full border border-[#D8E0DB] rounded px-4 py-3 text-[#16241E] transition-colors duration-200
+                       focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+                style="font-family: 'Work Sans', sans-serif;" />
+              @if (form.get('email')?.invalid && form.get('email')?.touched) {
+                <p class="text-red-500 text-xs mt-1.5" style="font-family: 'Work Sans', sans-serif;">Email invalide</p>
+              }
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-2" style="font-family: 'Work Sans', sans-serif;">Rôle</label>
+              <select formControlName="role"
+                class="w-full border border-[#D8E0DB] rounded px-4 py-3 text-[#16241E] transition-colors duration-200
+                       focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+                style="font-family: 'Work Sans', sans-serif;">
+                <option value="COLLABORATEUR">Collaborateur</option>
+                <option value="MANAGER">Manager</option>
+                <option value="ADMINISTRATEUR">Administrateur</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <label class="block text-xs uppercase tracking-wide text-[#6B8577] mb-2" style="font-family: 'Work Sans', sans-serif;">Mot de passe</label>
+            <input type="password" formControlName="mot_de_passe"
+              class="w-full border border-[#D8E0DB] rounded px-4 py-3 text-[#16241E] transition-colors duration-200
+                     focus:outline-none focus:border-[#35D68C] focus:ring-1 focus:ring-[#35D68C]"
+              style="font-family: 'Work Sans', sans-serif;" />
+            @if (form.get('mot_de_passe')?.invalid && form.get('mot_de_passe')?.touched) {
+              <p class="text-red-500 text-xs mt-1.5" style="font-family: 'Work Sans', sans-serif;">
+                Min. 8 caractères, avec majuscule, minuscule, chiffre et caractère spécial
+              </p>
+             }
+          </div>
+
+          <button type="submit" [disabled]="form.invalid || loading()"
+            class="w-full bg-[#0C2A20] text-[#F4F7F5] py-3.5 rounded font-medium transition-all duration-200
+                   hover:bg-[#15402F] disabled:opacity-50 disabled:hover:bg-[#0C2A20]"
+            style="font-family: 'Work Sans', sans-serif;">
+            {{ loading() ? 'Création...' : 'Créer le compte' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
