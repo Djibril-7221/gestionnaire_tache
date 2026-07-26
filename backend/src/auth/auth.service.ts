@@ -58,7 +58,7 @@ async login(createAuthDto: CreateAuthDto) {
   const { mot_de_passe, ...utilisateurSansMdp } = utilisateur;
 
   return {
-    utilisateur,
+    utilisateurSansMdp,
     access_token: accessToken,
     refresh_token: refreshToken, 
   };
