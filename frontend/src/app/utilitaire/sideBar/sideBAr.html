@@ -2,16 +2,16 @@
 <div class="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#0C2A20] flex items-center justify-between px-4 z-40">
   <span class="text-[#F4F7F5] text-sm font-semibold tracking-wide">{{ espace() }}</span>
   <button (click)="bascule()" aria-label="Ouvrir le menu"
-    class="w-9 h-9 flex flex-col items-center justify-center gap-[5px] group">
-    <span class="block w-5 h-[2px] bg-[#F4F7F5] transition-transform"
+    class="w-9 h-9 flex flex-col items-center justify-center gap-1.25 group">
+    <span class="block w-5 h-0.5 bg-[#F4F7F5] transition-transform"
       [class.rotate-45]="ouvert()" [class.translate-y-[7px]]="ouvert()"></span>
-    <span class="block w-5 h-[2px] bg-[#F4F7F5] transition-opacity" [class.opacity-0]="ouvert()"></span>
-    <span class="block w-5 h-[2px] bg-[#F4F7F5] transition-transform"
+    <span class="block w-5 h-0.5 bg-[#F4F7F5] transition-opacity" [class.opacity-0]="ouvert()"></span>
+    <span class="block w-5 h-0.5 bg-[#F4F7F5] transition-transform"
       [class.-rotate-45]="ouvert()" [class.-translate-y-[7px]]="ouvert()"></span>
   </button>
 </div>
 
-<!-- Fond assombri (mobile, quand ouvert) -->
+
 @if (ouvert()) {
   <div class="md:hidden fixed inset-0 bg-black/50 z-40" (click)="fermer()"></div>
 }
@@ -37,7 +37,7 @@
         [class.hover:bg-[#15402F]/60]="!rla.isActive"
         [class.hover:text-[#F4F7F5]]="!rla.isActive">
 
-        <span class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r bg-[#35D68C] transition-all duration-200"
+        <span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.75 rounded-r bg-[#35D68C] transition-all duration-200"
           [class.h-5]="rla.isActive" [class.h-0]="!rla.isActive"></span>
 
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"

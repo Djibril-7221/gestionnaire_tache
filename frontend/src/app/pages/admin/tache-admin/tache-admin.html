@@ -32,35 +32,35 @@
       <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-12">
         <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
                     transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-[#16241E]"></div>
+          <div class="absolute inset-x-0 top-0 h-0.75 rounded-t-lg bg-[#16241E]"></div>
           <p class="text-3xl text-[#16241E] mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ total }}</p>
           <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Total</p>
         </div>
 
         <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
                     transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-gray-300"></div>
+          <div class="absolute inset-x-0 top-0 h-0.75 rounded-t-lg bg-gray-300"></div>
           <p class="text-3xl text-gray-500 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('BROUILLON') }}</p>
           <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Brouillon</p>
         </div>
 
         <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
                     transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-amber-400"></div>
+          <div class="absolute inset-x-0 top-0 h-0.75 rounded-t-lg bg-amber-400"></div>
           <p class="text-3xl text-amber-600 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('SOUMISE') }}</p>
           <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Soumise</p>
         </div>
 
         <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
                     transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-[#35D68C]"></div>
+          <div class="absolute inset-x-0 top-0 h-0.75 rounded-t-lg bg-[#35D68C]"></div>
           <p class="text-3xl text-emerald-700 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('VALIDEE') }}</p>
           <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Validée</p>
         </div>
 
         <div class="group relative bg-white rounded-lg shadow-sm border border-[#E4EAE6] p-5 text-center
                     transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
-          <div class="absolute inset-x-0 top-0 h-[3px] rounded-t-lg bg-red-400"></div>
+          <div class="absolute inset-x-0 top-0 h-0.75 rounded-t-lg bg-red-400"></div>
           <p class="text-3xl text-red-600 mt-1" style="font-family: 'IBM Plex Mono', monospace;">{{ compterParStatut('REJETEE') }}</p>
           <p class="text-xs uppercase tracking-wide text-[#6B8577] mt-1" style="font-family: 'Work Sans', sans-serif;">Rejetée</p>
         </div>
@@ -81,7 +81,7 @@
             [style.animation-delay.ms]="i * 40">
 
             <!-- Accent gauche au survol, écho du sidebar -->
-            <span class="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-0 rounded-r bg-[#35D68C]
+            <span class="absolute left-0 top-1/2 -translate-y-1/2 w-0.75 h-0 rounded-r bg-[#35D68C]
                          transition-all duration-200 group-hover:h-6"></span>
 
             <div class="pl-2">
