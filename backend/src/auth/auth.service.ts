@@ -28,7 +28,7 @@ async login(createAuthDto: CreateAuthDto) {
     utilisateur.mot_de_passe,
   );
   if (!passwordValid) {
-    throw new UnauthorizedException('Mot de passe in');
+    throw new UnauthorizedException('Identifiants invalides');
   }
 
   const payload = { sub: utilisateur.id, email: utilisateur.email, role: utilisateur.role };
