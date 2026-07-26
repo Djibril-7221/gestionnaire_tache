@@ -17,7 +17,6 @@ export class AuthController {
     return this.authService.login(createAuthDto);
   }
 
-  @Public()
   @Post('logout')
   async logout(
     @CurrentUser() user: { id: number },
