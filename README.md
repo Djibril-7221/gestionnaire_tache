@@ -100,4 +100,5 @@ rh_perspectives_project/
 ├── frontend/          # Application Angular
 ├── docker-compose.yml
 └── README.md
-```
+└── docs/
+      └── documentation_du_projet.pdf
